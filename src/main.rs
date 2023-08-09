@@ -117,6 +117,7 @@ pub fn dungeon_loop(c: &mut Character) {
     println!("{}.", cur_room.desc);
  
     loop {
+        println!("------------------------------------------------------------------------");
         //User types command
         let mut command = String::new();
 
@@ -124,7 +125,7 @@ pub fn dungeon_loop(c: &mut Character) {
             .read_line(&mut command)
             .expect("Failed to read line!");
 
-        //command = command.to_lowercase();
+        command = command.to_lowercase();
 
         let parts: Vec<&str> = command.split(' ').collect();
 
@@ -134,13 +135,13 @@ pub fn dungeon_loop(c: &mut Character) {
             continue; 
         }
         //look
-        if parts[0] == "look"
+        if parts[0].trim() == "look"
         {
             println!("{}.", cur_room.desc);
             continue;
         }
         //Inventory
-        if parts[0] == "inventory"
+        if parts[0].trim() == "inventory"
         {
             c.print_inventory();
             continue;

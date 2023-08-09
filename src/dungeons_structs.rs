@@ -39,6 +39,10 @@ impl Link {
     }
 }
 
-// pub struct Dungeon {
-//     pub rooms: HashMap,
-// }
+pub fn enter_room(r: &Room) {
+    println!("{}", r.desc);
+
+    for l in &r.exits {
+        println!("{}", l.extra);
+    }
+}

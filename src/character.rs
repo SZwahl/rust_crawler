@@ -136,17 +136,17 @@ impl Character {
         println!("You have are weilding {} ({})", self.e_weapon.name, self.e_weapon.roll);
         println!("You have {} armor from wearing {} (+{}). ", self.armor, self.e_armor.name, self.e_armor.bonus);
         println!("[Weapons]");
-        for wep in self.i_weapons.clone()
+        for wep in &self.i_weapons
         {
             println!("*\t{}", wep.name);
         }
         println!("[Armor]");
-        for arm in self.i_armor.clone()
+        for arm in &self.i_armor
         {
             println!("*\t{}", arm.name);
         }
         println!("[Spells]");
-        for spel in self.i_spells.clone()
+        for spel in &self.i_spells
         {
             println!("*\t{}", spel.name);
         }
