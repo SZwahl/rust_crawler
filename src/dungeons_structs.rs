@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 
 pub struct Room {
     pub id: u32,
@@ -39,10 +41,24 @@ impl Link {
     }
 }
 
-pub fn enter_room(r: &Room) {
-    println!("{}", r.desc);
+pub struct Dungeon {
+    pub map: HashMap<u32, Room>,
+    pub cur: u32,
+}
 
-    for l in &r.exits {
-        println!("{}", l.extra);
+impl Dungeon {
+    pub fn new() -> Self {
+        Self {
+            map: HashMap::new(),
+            cur: 1,
+        }
+    }
+
+    pub fn cur_room(&self) -> &Room {
+        return &self.map[&self.cur];
+    }
+
+    pub fn cur_id(&self) -> u32 {
+        return self.cur;
     }
 }

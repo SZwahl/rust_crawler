@@ -112,9 +112,9 @@ fn wait_for_continue(){
 
 pub fn dungeon_loop(c: &mut Character) {
 
-    let cur_room: &Room = &load_test_dungeon();
+    let mut dungeon: Dungeon = load_test_dungeon();
 
-    println!("{}.", cur_room.desc);
+    enter_room(dungeon.cur_id(), &mut dungeon);
  
     loop {
         println!("------------------------------------------------------------------------");
@@ -125,7 +125,7 @@ pub fn dungeon_loop(c: &mut Character) {
             .read_line(&mut command)
             .expect("Failed to read line!");
 
-        command = command.to_lowercase();
+        //command = command.to_lowercase();
 
         let parts: Vec<&str> = command.split(' ').collect();
 
@@ -137,7 +137,7 @@ pub fn dungeon_loop(c: &mut Character) {
         //look
         if parts[0].trim() == "look"
         {
-            println!("{}.", cur_room.desc);
+            println!("{}.", dungeon.cur_room().desc);
             continue;
         }
         //Inventory
@@ -146,10 +146,49 @@ pub fn dungeon_loop(c: &mut Character) {
             c.print_inventory();
             continue;
         }
+        //check double-word commands
+        if parts.len() == 2 { 
+            //enter
+            if parts[0].trim() == "enter"
+            {
+                let goto = parts[1].trim();
+                
+                lookup_room(goto, &mut dungeon);
+            }
+            
+        }
         else {
             println!("Invalid action!");
             continue; 
         }
     }
 
+}
+
+fn lookup_room(s: &str, d: &mut Dungeon) ->bool {
+    //Loop and compare to exits
+    for exit in &d.cur_room().exits
+    {
+        if exit.name.trim() == s.trim() {
+            enter_room(exit.other, d);
+            return true;
+        }
+    }
+
+    println!("No {}", s);
+    return false;
+}
+
+fn enter_room(r: u32, dun: &mut Dungeon) {
+    
+    //Lookup room
+    let room: &Room = &dun.map[&r];
+
+    println!("{}", room.desc);
+
+    for l in &room.exits {
+        println!("{}", l.extra);
+    }
+
+    dun.cur = room.id;
 }
