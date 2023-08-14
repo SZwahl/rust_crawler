@@ -2,6 +2,8 @@ use std::io;
 
 mod roll;
 use crate::roll::*;
+mod creature;
+use crate::creature::*;
 mod character;
 use crate::character::*;
 mod equipment;

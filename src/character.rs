@@ -2,26 +2,11 @@
 
 use crate::roll::*;
 use crate::equipment::*;
+use crate::creature::*;
 
 pub struct Character {
-    //Stats
-    pub power: u32,
-    pub finesse: u32,
-    pub mind: u32,
-
-    pub mod_power: i8,
-    pub mod_finesse: i8,
-    pub mod_mind: i8,
-
     //Condition
-    pub hp: u32,
-    pub armor: u32,
-
-    //Current stats
-    pub c_power: u32,
-    pub c_finesse: u32,
-    pub c_mind: u32,
-    pub c_hp: u32,
+    pub condition: Condition,
 
     //Equipped items
     pub e_weapon: Weapon,
@@ -43,21 +28,7 @@ impl Character {
         let hit_p = roll("2d4").total;
         
         Self {
-            power: stat1,
-            finesse: stat2,
-            mind: stat3,
-
-            mod_power: calc_mod(stat1),
-            mod_finesse: calc_mod(stat2),
-            mod_mind: calc_mod(stat3),
-
-            hp: hit_p,
-            armor: 0,
-    
-            c_power: stat1,
-            c_finesse: stat2,
-            c_mind: stat3,
-            c_hp: hit_p,
+            condition: Condition::new(hit_p, stat1, stat2, stat3),
 
             e_weapon: Weapon::new("Unarmed", "1d4", false),
             e_armor: Armor::new("Unarmored", 0, false),
@@ -70,11 +41,12 @@ impl Character {
     }
 
     pub fn print_character(&self){
+        let c: Condition = self.condition;
         println!("Your character has: \n\t{}/{} power ({}) \n\t{}/{} finesse ({}) \n\t{}/{} mind ({}).", 
-            self.c_power, self.power, self.mod_power,
-            self.c_finesse, self.finesse, self.mod_finesse,
-            self.c_mind, self.mind, self.mod_mind);
-        println!("Your Hit Protection is {}/{}", self.c_hp, self.hp);
+            c.c_power, c.power, c.mod_power,
+            c.c_finesse, c.finesse, c.mod_finesse,
+            c.c_mind, c.mind, c.mod_mind);
+        println!("Your Hit Protection is {}/{}", c.c_hp, c.hp);
 
         if self.e_shield
         {
@@ -127,14 +99,14 @@ impl Character {
 
         //set true and armor up
         self.e_shield = true;
-        self.armor += 1;
-        println!("Shield equipped. Your armor is now {}.", self.armor);
+        self.condition.armor += 1;
+        println!("Shield equipped. Your armor is now {}.", self.condition.armor);
     }
 
     pub fn print_inventory(&self)
     {
         println!("You have are weilding {} ({})", self.e_weapon.name, self.e_weapon.roll);
-        println!("You have {} armor from wearing {} (+{}). ", self.armor, self.e_armor.name, self.e_armor.bonus);
+        println!("You have {} armor from wearing {} (+{}). ", self.condition.armor, self.e_armor.name, self.e_armor.bonus);
         println!("[Weapons]");
         for wep in &self.i_weapons
         {
@@ -151,15 +123,5 @@ impl Character {
             println!("*\t{}", spel.name);
         }
     }
-}
-
-fn calc_mod(stat: u32) -> i8 {
-    if stat == 18 { return 3; }
-    else if stat >= 15 { return 2; }
-    else if stat >= 12 { return 1; }
-    else if stat >= 9 { return 0; }
-    else if stat >= 6 { return -1; }
-    else if stat >= 4 { return -2; }
-    else { return -3; }
 }
 
