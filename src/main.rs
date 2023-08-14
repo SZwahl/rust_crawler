@@ -65,25 +65,25 @@ fn choose_equipment(c: &mut Character){
 
             if selection == 1
             {
-                let sword = Weapon::new("Sword", "1d6", false);
+                let sword = Weapon::new("Sword", "slash", "1d6", false, StatTypes::Power);
                 c.swap_weapon(sword);
                 c.equip_shield();
             }
             else if selection == 2
             {
-                let greataxe = Weapon::new("Greataxe", "1d8", true);
+                let greataxe = Weapon::new("Greataxe", "swing", "1d8", true, StatTypes::Power);
                 c.swap_weapon(greataxe);
             }
             else if selection == 3
             {
-                let bow = Weapon::new("Bow", "1d6", true);
-                let dagger = Weapon::new("Dagger", "1d6", false);
+                let bow = Weapon::new("Bow", "shoot", "1d6", true, StatTypes::Finesse);
+                let dagger = Weapon::new("Dagger", "stab with", "1d6", false, StatTypes::Finesse);
                 c.swap_weapon(bow);
                 c.acquire_weapon(dagger);
             }
             else if selection == 4
             {
-                let orb = Weapon::new("Clouded Orb", "focus", true);
+                let orb = Weapon::new("Clouded Orb", "manipulate", "focus", true, StatTypes::Mind);
                 c.swap_weapon(orb);
                 let spell = random_spell(roll("1d4").total);
                 c.learn_spell(spell);
@@ -109,6 +109,8 @@ fn wait_for_continue(){
     io::stdin()
         .read_line(&mut entry)
         .expect("Failed to read line!");
+
+        println!("------------------------------------------------------------------------");
 }
 
 
@@ -148,6 +150,12 @@ pub fn dungeon_loop(c: &mut Character) {
             c.print_inventory();
             continue;
         }
+        //hp
+        if parts[0] == "hp"
+        {
+            println!("You have {} HP left.", c.condition.c_hp);
+            continue;
+        }
         //check double-word commands
         if parts.len() == 2 { 
             //enter
@@ -157,7 +165,16 @@ pub fn dungeon_loop(c: &mut Character) {
                 
                 lookup_room(goto, &mut dungeon);
             }
-            
+            else if parts[0].trim() == "attack"
+            {
+                for num in 0..dungeon.cur_room().enemies.len() {
+                    let e = &mut dungeon.cur_room().enemies[num];
+                    //is valid
+                    if e.name.clone() == parts[1].trim() {
+                        let e_is_dead = attack_enemy(&mut e, c);
+                    }
+                }
+            }
         }
         else {
             println!("Invalid action!");
@@ -207,4 +224,28 @@ fn enter_room(r: u32, dun: &mut Dungeon) {
     }
 
     dun.cur = room.id;
+}
+
+fn attack_enemy(e: &mut Creature, c: &Character) -> IsDead {
+    //roll damage
+    let damage_roll = roll(c.e_weapon.roll.as_str());
+    let d_mod = c.get_wep_mod();
+    let damage_total: i32 = damage_roll.total as i32 + i32::from(d_mod);
+
+    //construct breakdown
+    let mut brkdwn = damage_roll.individuals;
+    brkdwn.insert(0, '(');
+    brkdwn.push_str(")+");
+
+    //print breakdown
+    println!("You {} your {}, rolling a {} ({}{})", c.e_weapon.verb, c.e_weapon.name, damage_total, brkdwn, d_mod);
+
+
+    let mut condition: Condition = e.con;
+    //apply to enemy
+    let is_dead = condition.damage(damage_total, &String::from("You"), &e.name);
+
+    println!("{} has {} hp left!", e.name, condition.c_hp);
+
+    return is_dead;
 }

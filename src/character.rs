@@ -30,7 +30,7 @@ impl Character {
         Self {
             condition: Condition::new(hit_p, stat1, stat2, stat3),
 
-            e_weapon: Weapon::new("Unarmed", "1d4", false),
+            e_weapon: Weapon::new("Unarmed", "punch", "1d4", false, StatTypes::Power),
             e_armor: Armor::new("Unarmored", 0, false),
             e_shield: false,
 
@@ -40,13 +40,23 @@ impl Character {
         }
     }
 
+    pub fn get_wep_mod(&self) -> i8 {
+        match self.e_weapon.stat {
+            StatTypes::Power => self.condition.mod_power,
+            StatTypes::Finesse => self.condition.mod_finesse,
+            StatTypes::Mind => self.condition.mod_mind,
+            StatTypes::Health => 0,
+            StatTypes::None => 0,
+        }
+    }
+
     pub fn print_character(&self){
         let c: Condition = self.condition;
         println!("Your character has: \n\t{}/{} power ({}) \n\t{}/{} finesse ({}) \n\t{}/{} mind ({}).", 
             c.c_power, c.power, c.mod_power,
             c.c_finesse, c.finesse, c.mod_finesse,
             c.c_mind, c.mind, c.mod_mind);
-        println!("Your Hit Protection is {}/{}", c.c_hp, c.hp);
+        println!("Your Hit Protection is {}/{}", c.c_hp, c.tot_hp);
 
         if self.e_shield
         {

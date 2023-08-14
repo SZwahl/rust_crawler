@@ -7,6 +7,12 @@ pub enum StatTypes {
     None,
 }
 
+pub enum IsDead {
+    Ok,
+    Dead,
+    Invalid,
+}
+
 #[derive(Copy, Clone)]
 pub struct Condition {
         //Stats
@@ -19,7 +25,7 @@ pub struct Condition {
         pub mod_mind: i8,
     
         //Condition
-        pub hp: u32,
+        pub tot_hp: u32,
         pub armor: u32,
     
         //Current stats
@@ -40,7 +46,7 @@ impl Condition {
             mod_finesse: calc_mod(fin),
             mod_mind: calc_mod(mi),
 
-            hp: hp,
+            tot_hp: hp,
             armor: 0,
     
             c_power: pow,
@@ -48,6 +54,31 @@ impl Condition {
             c_mind: mi,
             c_hp: hp,
         }
+    }
+
+    pub fn damage(&mut self, dam: i32, n1: &String, n2: &String) -> IsDead {        
+        //subtract armor from damage
+        let mut tot_dam = dam - self.armor as i32;
+        if tot_dam < 0 { tot_dam = 0; }
+
+        //subtract damage from hit protect
+        self.c_hp -= tot_dam as u32;
+        if self.c_hp < 0 { self.c_hp == 0; }
+
+        let mut doesdo = "";
+
+        //lol
+        if n1 == "You" { doesdo = "do";}
+        else { doesdo = "does"; }
+
+        println!("{} {} {} damage to {}.", n1, doesdo, tot_dam, n2);
+
+        if self.c_hp == 0 {
+            println!("{} dies!", n2); 
+            return IsDead::Dead;
+        }
+
+        return IsDead::Ok;
     }
 }
 
@@ -96,6 +127,10 @@ impl Creature {
             con: con,
             attacks: Vec::new(),
         }
+    }
+
+    pub fn get_condition(&mut self) -> &mut Condition {
+        return &mut self.con;
     }
 
     pub fn add_attack(&mut self, a: Attack) {

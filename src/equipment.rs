@@ -11,16 +11,20 @@ use crate::creature::StatTypes;
 #[derive(Clone)]
 pub struct Weapon {
     pub name: String,
+    pub verb: String,
     pub roll: String,
     pub bulky: bool,
+    pub stat: StatTypes,
 }
 
 impl Weapon {
-    pub fn new(n: &str, r: &str, b: bool) -> Self {
+    pub fn new(n: &str, v: &str, r: &str, b: bool, t: StatTypes) -> Self {
         Self {
             name: String::from(n),
+            verb: String::from(v),
             roll: String::from(r),
             bulky: b,
+            stat: t,
         }
     }
 

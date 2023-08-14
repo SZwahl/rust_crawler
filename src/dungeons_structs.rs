@@ -38,7 +38,7 @@ impl Room {
         //Clone and iterate for more
         for ix in 1..=amt{
             let mut e = enemy.clone();
-            e.name.push_str(" ");
+            e.name.push_str("_");
             e.name.push_str(ix.to_string().as_str()); 
             self.enemies.push(e);
         }
