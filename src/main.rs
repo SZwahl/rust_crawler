@@ -37,11 +37,11 @@ fn main() {
 fn choose_equipment(c: &mut Character){
     println!("Choose your equipment: ");
     println!("
-    1) Sword (1d6) and Shield (+1)\n
-    2) Greataxe (B) (1d8)\n
-    3) Bow (B) (1d8) and Dagger (1d6)\n
-    4) Clouded Orb (focus) and Spell (Random)\n
-    \n>>");
+    1) Sword (1d6) and Shield (+1)
+    2) Greataxe (B) (1d8)
+    3) Bow (B) (1d8) and Dagger (1d6)
+    4) Clouded Orb (focus) and Spell (Random)
+    \n");
 
     loop {
             let mut selection = String::new();
@@ -190,6 +190,20 @@ fn enter_room(r: u32, dun: &mut Dungeon) {
 
     for l in &room.exits {
         println!("{}", l.extra);
+    }
+
+    if room.enemies.len() > 0 {
+        let mut e_desc: String = String::from("Inside the room is ");
+        
+        for ix in 0..room.enemies.len() {
+            e_desc.push_str(room.enemies[ix].name.as_str());
+
+            if ix != room.enemies.len()-1 {
+                e_desc.push_str(", ");
+            }
+        }
+
+        println!("{e_desc}");
     }
 
     dun.cur = room.id;

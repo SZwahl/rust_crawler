@@ -1,10 +1,13 @@
 use std::collections::HashMap;
 
+use crate::creature::Creature;
+
 
 pub struct Room {
     pub id: u32,
     pub desc: String,
     pub exits: Vec<Link>,
+    pub enemies: Vec<Creature>,
 }
 
 impl Room {
@@ -13,6 +16,7 @@ impl Room {
             id: id,
             desc: String::from(""),
             exits: Vec::new(),
+            enemies: Vec::new(),
         }
     }
 
@@ -22,6 +26,23 @@ impl Room {
 
     pub fn add_link(&mut self, link: Link) {
         self.exits.push(link);
+    }
+
+    pub fn add_enemies(&mut self, enemy: Creature, amt: u32) {
+        //adding just 1
+        if amt == 1 {
+            self.enemies.push(enemy);
+            return;
+        }
+
+        //Clone and iterate for more
+        for ix in 1..=amt{
+            let mut e = enemy.clone();
+            e.name.push_str(" ");
+            e.name.push_str(ix.to_string().as_str()); 
+            self.enemies.push(e);
+        }
+        
     }
 }
 

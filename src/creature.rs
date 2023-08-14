@@ -1,3 +1,12 @@
+#[derive(Clone)]
+pub enum StatTypes {
+    Power,
+    Finesse,
+    Mind,
+    Health,
+    None,
+}
+
 #[derive(Copy, Clone)]
 pub struct Condition {
         //Stats
@@ -52,7 +61,44 @@ fn calc_mod(stat: u32) -> i8 {
     else { return -3; }
 }
 
+#[derive(Clone)]
+pub struct Attack {
+    pub desc: String,
+    pub damage: String,
+    pub save: StatTypes,
+    pub eff_type: StatTypes,
+    pub eff_damage: String,
+}
+
+impl Attack {
+    pub fn new(des: &str, dam: &str, sav: StatTypes, eff_t: StatTypes, eff_dam: &str) -> Self {
+        Self {
+            desc: String::from(des),
+            damage: String::from(dam),
+            save: sav,
+            eff_type: eff_t,
+            eff_damage: String::from(eff_dam),
+        }
+    }
+}
+
+#[derive(Clone)]
 pub struct Creature {
     pub name: String,
     pub con: Condition,
+    pub attacks: Vec<Attack>,
+}
+
+impl Creature {
+    pub fn new(n: &str, con: Condition) -> Self {
+        Self {
+            name: String::from(n),
+            con: con,
+            attacks: Vec::new(),
+        }
+    }
+
+    pub fn add_attack(&mut self, a: Attack) {
+        self.attacks.push(a);
+    }
 }

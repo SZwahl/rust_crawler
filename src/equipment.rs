@@ -6,6 +6,8 @@
 //     Heavy,
 // }
 
+use crate::creature::StatTypes;
+
 #[derive(Clone)]
 pub struct Weapon {
     pub name: String,
@@ -52,25 +54,17 @@ impl Armor {
 }
 
 #[derive(Clone)]
-pub enum SaveTypes {
-    Power,
-    Finesse,
-    Mind,
-    None,
-}
-
-#[derive(Clone)]
 pub struct Spell {
     pub name: String,
     pub cast_desc: String,
     pub cost: u32,
     pub damage: String,
-    pub enemy_save: SaveTypes,
+    pub enemy_save: StatTypes,
     pub multi: bool,
 }
 
 impl Spell {
-    pub fn new(n: &str, desc: &str, cost: u32, dam: &str, save: SaveTypes, mult: bool) -> Self {
+    pub fn new(n: &str, desc: &str, cost: u32, dam: &str, save: StatTypes, mult: bool) -> Self {
         Self {
             name: String::from(n),
             cast_desc: String::from(desc),
@@ -90,7 +84,7 @@ pub fn random_spell(num: u32) -> Spell
             "Static surrounds your orb and an electric bolt leaps from your fingers.",
         1,
         "1d8",
-            SaveTypes::None,
+            StatTypes::None,
             false
         );
 
@@ -100,7 +94,7 @@ pub fn random_spell(num: u32) -> Spell
                 "Your orb turns white and emits a thin beam, which explodes in a blinding flash.",
                 2,
                 "1d10",
-                SaveTypes::Finesse,
+                StatTypes::Finesse,
                 true
             );
 
@@ -110,7 +104,7 @@ pub fn random_spell(num: u32) -> Spell
                 "Your orb glows bale blue and refracts large discs of light into the enemy.",
                 1,
                 "1d6",
-                SaveTypes::None,
+                StatTypes::None,
                 true
             );
 
