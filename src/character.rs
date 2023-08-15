@@ -25,7 +25,7 @@ impl Character {
         let stat1 = roll("3d6").total;
         let stat2 = roll("3d6").total;
         let stat3 = roll("3d6").total;
-        let hit_p = roll("2d4").total;
+        let hit_p = roll("2d6").total;
         
         Self {
             condition: Condition::new(hit_p, stat1, stat2, stat3),
@@ -52,11 +52,11 @@ impl Character {
 
     pub fn print_character(&self){
         let c: Condition = self.condition;
-        println!("Your character has: \n\t{}/{} power ({}) \n\t{}/{} finesse ({}) \n\t{}/{} mind ({}).", 
+        println!("Your character has: \n\t{}/{} Hit Protection\n\t{}/{} power ({}) \n\t{}/{} finesse ({}) \n\t{}/{} mind ({}).", 
+            c.c_hp, c.tot_hp,
             c.c_power, c.power, c.mod_power,
             c.c_finesse, c.finesse, c.mod_finesse,
             c.c_mind, c.mind, c.mod_mind);
-        println!("Your Hit Protection is {}/{}", c.c_hp, c.tot_hp);
 
         if self.e_shield
         {

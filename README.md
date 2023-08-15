@@ -3,6 +3,11 @@
 Simple dungeon crawler written in Rust.
 
 ## Commands
+These actions are free
 * look
 * inventory
 * enter [hallway]
+
+## Combat Commands
+These actions will advnace combat, provoking attacks from surviving enemies.
+* attack [x]

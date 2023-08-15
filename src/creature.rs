@@ -7,6 +7,7 @@ pub enum StatTypes {
     None,
 }
 
+#[derive(PartialEq)]
 pub enum IsDead {
     Ok,
     Dead,
@@ -117,14 +118,16 @@ impl Attack {
 #[derive(Clone)]
 pub struct Creature {
     pub name: String,
+    pub name_s: String,
     pub con: Condition,
     pub attacks: Vec<Attack>,
 }
 
 impl Creature {
-    pub fn new(n: &str, con: Condition) -> Self {
+    pub fn new(n: &str, n_s: &str, con: Condition) -> Self {
         Self {
             name: String::from(n),
+            name_s: String::from(n_s),
             con: con,
             attacks: Vec::new(),
         }

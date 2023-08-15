@@ -123,6 +123,8 @@ pub fn dungeon_loop(c: &mut Character) {
  
     loop {
         println!("------------------------------------------------------------------------");
+        let mut combat_action = false;
+
         //User types command
         let mut command = String::new();
 
@@ -169,15 +171,38 @@ pub fn dungeon_loop(c: &mut Character) {
             //attack
             else if parts[0].trim() == "attack"
             {
-                //let mut r = ;
-                dungeon.map.get_mut(&dungeon.cur).map(|val| val.attack_enemy(parts[1].trim(), c));
-
-
+                let is_dead = dungeon.map.get_mut(&dungeon.cur).map(|val| val.attack_enemy(parts[1].trim(), c));
+                
+                if is_dead.expect("uh") != IsDead::Invalid {
+                    combat_action = true;
+                }
             }
         }
         else {
             println!("Invalid action!");
             continue; 
+        }
+
+
+        if combat_action {
+            //loop through enemies and they attack
+            for e in &dungeon.cur_room().enemies {
+
+                let damage_total = 2;
+
+                //get condition
+                let condition: &mut Condition = &mut c.condition;
+                //apply to you
+                let is_dead = condition.damage(damage_total, &e.name, &String::from("You"));
+
+                if is_dead == IsDead::Ok {
+                    println!("You have {} hp left!", condition.c_hp);
+                }
+                else if is_dead == IsDead::Dead {
+                    println!("You died!");
+                    return;
+                }
+            }
         }
     }
 
@@ -213,6 +238,9 @@ fn enter_room(r: u32, dun: &mut Dungeon) {
         
         for ix in 0..room.enemies.len() {
             e_desc.push_str(room.enemies[ix].name.as_str());
+            e_desc.push_str("(");
+            e_desc.push_str(room.enemies[ix].name_s.as_str());
+            e_desc.push_str(")");
 
             if ix != room.enemies.len()-1 {
                 e_desc.push_str(", ");

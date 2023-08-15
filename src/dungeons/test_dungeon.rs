@@ -15,7 +15,7 @@ pub fn load_test_dungeon() -> Dungeon {
     room2.add_desc("This room is circular, about 30 feet wide.");
     room2.add_link(Link::new(1, "Tunnel", "The [Tunnel] extends back to the ravine you entered from."));
         
-    let mut skeleton = Creature::new("Skeleton", Condition::new(6, 6, 8, 2));
+    let mut skeleton = Creature::new("Skeleton", "S", Condition::new(4, 6, 8, 2));
     skeleton.add_attack(
         Attack::new(
             "swings its sword", 

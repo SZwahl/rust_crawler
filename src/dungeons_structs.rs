@@ -41,28 +41,28 @@ impl Room {
         //Clone and iterate for more
         for ix in 1..=amt{
             let mut e = enemy.clone();
-            e.name.push_str("_");
-            e.name.push_str(ix.to_string().as_str()); 
+           //e.name_s.push_str("_");
+            e.name_s.push_str(ix.to_string().as_str()); 
             self.enemies.push(e);
         }
     }
 
-    pub fn attack_enemy(&mut self, e_str: &str, c: &Character) {
+    pub fn attack_enemy(&mut self, e_str: &str, c: &Character) -> IsDead {
         //roll damage
         let r = &mut self.enemies;
 
         for num in 0..r.len() {
             let e = &mut r[num];
             //is valid
-            if &e.name == e_str {
+            if &e.name_s == e_str {
                 let damage_roll = roll(c.e_weapon.roll.as_str());
                 let d_mod = c.get_wep_mod();
                 let damage_total: i32 = damage_roll.total as i32 + i32::from(d_mod);
             
                 //construct breakdown
                 let mut brkdwn = damage_roll.individuals;
-                brkdwn.insert(0, '(');
-                brkdwn.push_str(")+");
+                //brkdwn.insert(0, '');
+                brkdwn.push_str("+");
             
                 //print breakdown
                 println!("You {} your {}, rolling a {} ({}{})", c.e_weapon.verb, c.e_weapon.name, damage_total, brkdwn, d_mod);
@@ -84,10 +84,11 @@ impl Room {
                 }
 
 
-                return;
+                return is_dead;
             }
         }
         println!("Invalid enemy \"{}\"", e_str);
+        return IsDead::Invalid;
     }
 }
 
