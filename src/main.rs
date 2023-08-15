@@ -1,3 +1,4 @@
+use std::borrow::BorrowMut;
 use std::io;
 
 mod roll;
@@ -165,15 +166,13 @@ pub fn dungeon_loop(c: &mut Character) {
                 
                 lookup_room(goto, &mut dungeon);
             }
+            //attack
             else if parts[0].trim() == "attack"
             {
-                for num in 0..dungeon.cur_room().enemies.len() {
-                    let e = &mut dungeon.cur_room().enemies[num];
-                    //is valid
-                    if e.name.clone() == parts[1].trim() {
-                        let e_is_dead = attack_enemy(&mut e, c);
-                    }
-                }
+                //let mut r = ;
+                dungeon.map.get_mut(&dungeon.cur).map(|val| val.attack_enemy(parts[1].trim(), c));
+
+
             }
         }
         else {
@@ -226,26 +225,3 @@ fn enter_room(r: u32, dun: &mut Dungeon) {
     dun.cur = room.id;
 }
 
-fn attack_enemy(e: &mut Creature, c: &Character) -> IsDead {
-    //roll damage
-    let damage_roll = roll(c.e_weapon.roll.as_str());
-    let d_mod = c.get_wep_mod();
-    let damage_total: i32 = damage_roll.total as i32 + i32::from(d_mod);
-
-    //construct breakdown
-    let mut brkdwn = damage_roll.individuals;
-    brkdwn.insert(0, '(');
-    brkdwn.push_str(")+");
-
-    //print breakdown
-    println!("You {} your {}, rolling a {} ({}{})", c.e_weapon.verb, c.e_weapon.name, damage_total, brkdwn, d_mod);
-
-
-    let mut condition: Condition = e.con;
-    //apply to enemy
-    let is_dead = condition.damage(damage_total, &String::from("You"), &e.name);
-
-    println!("{} has {} hp left!", e.name, condition.c_hp);
-
-    return is_dead;
-}

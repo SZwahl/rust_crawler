@@ -62,8 +62,10 @@ impl Condition {
         if tot_dam < 0 { tot_dam = 0; }
 
         //subtract damage from hit protect
-        self.c_hp -= tot_dam as u32;
-        if self.c_hp < 0 { self.c_hp == 0; }
+        let mut uh: i32 = self.c_hp as i32;
+        uh -= tot_dam;
+        if uh < 0 { uh = 0; }
+        self.c_hp = uh as u32;
 
         let mut doesdo = "";
 
@@ -74,7 +76,6 @@ impl Condition {
         println!("{} {} {} damage to {}.", n1, doesdo, tot_dam, n2);
 
         if self.c_hp == 0 {
-            println!("{} dies!", n2); 
             return IsDead::Dead;
         }
 
