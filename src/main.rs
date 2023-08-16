@@ -67,25 +67,25 @@ fn choose_equipment(c: &mut Character){
 
             if selection == 1
             {
-                let sword = Weapon::new("Sword", "slash", "1d6", false, StatTypes::Power);
+                let sword = Weapon::new("Sword", "slash", "1d6", 0, false, StatTypes::Power);
                 c.swap_weapon(sword);
                 c.equip_shield();
             }
             else if selection == 2
             {
-                let greataxe = Weapon::new("Greataxe", "swing", "1d8", true, StatTypes::Power);
+                let greataxe = Weapon::new("Greataxe", "swing", "1d8", 0, true, StatTypes::Power);
                 c.swap_weapon(greataxe);
             }
             else if selection == 3
             {
-                let bow = Weapon::new("Bow", "shoot", "1d6", true, StatTypes::Finesse);
-                let dagger = Weapon::new("Dagger", "stab with", "1d6", false, StatTypes::Finesse);
+                let bow = Weapon::new("Bow", "shoot", "1d6", 0, true, StatTypes::Finesse);
+                let dagger = Weapon::new("Dagger", "stab with", "1d6", 0, false, StatTypes::Finesse);
                 c.swap_weapon(bow);
                 c.acquire_weapon(dagger);
             }
             else if selection == 4
             {
-                let orb = Weapon::new("Clouded Orb (spell focus)", "bash ineffectively", "1d1", true, StatTypes::Mind);
+                let orb = Weapon::new("Clouded Orb (spell focus)", "bash ineffectively", "1d1", 0, true, StatTypes::Mind);
                 c.swap_weapon(orb);
                 let spell = random_spell(roll("1d4").total);
                 c.learn_spell(spell);
@@ -276,6 +276,11 @@ pub fn dungeon_loop(c: &mut Character) {
                 let mut spell = random_spell(1);
                 let mut s_valid = false;
                 let mut e_valid = false;
+
+                //Wielding orb?
+                if c.e_weapon.roll != "1d1" {
+                    println!("Must be weilding an Orb to cast spells.");
+                }
 
                 //Spell valid?
                 for s in &c.i_spells {

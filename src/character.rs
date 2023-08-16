@@ -44,7 +44,7 @@ impl Character {
         Self {
             condition: Condition::new(hit_p, stats[0], stats[1], stats[2]),
 
-            e_weapon: Weapon::new("Unarmed", "punch", "1d4", false, StatTypes::Power),
+            e_weapon: Weapon::new("Unarmed", "punch", "1d4", 0, false, StatTypes::Power),
             e_armor: Armor::new("Unarmored", 0, false),
             e_shield: false,
 

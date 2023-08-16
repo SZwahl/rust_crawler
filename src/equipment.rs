@@ -6,23 +6,25 @@
 //     Heavy,
 // }
 
-use crate::creature::StatTypes;
+use crate::{creature::StatTypes, character::Character, roll::{Roll, roll}};
 
 #[derive(Clone)]
 pub struct Weapon {
     pub name: String,
     pub verb: String,
     pub roll: String,
+    pub modifier: i32,
     pub bulky: bool,
     pub stat: StatTypes,
 }
 
 impl Weapon {
-    pub fn new(n: &str, v: &str, r: &str, b: bool, t: StatTypes) -> Self {
+    pub fn new(n: &str, v: &str, r: &str, m: i32, b: bool, t: StatTypes) -> Self {
         Self {
             name: String::from(n),
             verb: String::from(v),
             roll: String::from(r),
+            modifier: m,
             bulky: b,
             stat: t,
         }
@@ -31,12 +33,54 @@ impl Weapon {
     pub fn print(&self) -> String {
         let mut printed: String = self.name.clone();
 
+
+        if self.modifier < 0 {
+            printed.push_str("(-");
+            printed.push_str(&self.modifier.to_string());
+            printed.push_str(")");
+        }
+        else if self.modifier > 0 {
+            printed.push_str("(+");
+            printed.push_str(&self.modifier.to_string());
+            printed.push_str(")");
+        }
+
         if self.bulky
         {
             printed.push_str(" (B)");
         }
 
         return printed;
+    }
+
+    pub fn loot() -> Weapon {
+        let roll = roll("1d10").total;
+        
+        let rapier = Weapon::new("Shiny Rapier", "slash", "1d6", 1, false, StatTypes::Finesse);
+        let hefaxe = Weapon::new("Hefty Warhammer", "swing hard", "1d8", 1, true, StatTypes::Power);
+        let bbow = Weapon::new("Blackwood Bow", "shoot", "1d8", 1, true, StatTypes::Finesse);
+        let clearorb = Weapon::new("Clear Orb (spell focus)", "attack using", "1d1", 1, true, StatTypes::Mind);
+        let haxe = Weapon::new("Moonsteel Hand-axe", "hack", "1d8", 1, false, StatTypes::Power);
+
+        let ssword = Weapon::new("Runed Longsword", "slash valiantly with", "1d8", 2, false, StatTypes::Power);
+        let fbow = Weapon::new("Magma Bow", "shoot a fiery shot from", "1d10", 2, true, StatTypes::Finesse);
+        let nsorb = Weapon::new("Night-Sky Orb", "attack using", "1d1", 4, true, StatTypes::Mind);
+        let ugs = Weapon::new("Dragon-tail Greatsword", "heave", "1d10", 2, true, StatTypes::Power);
+        let bfkatana = Weapon::new("Billion-fold Katana", "flash", "1d10", 3, true, StatTypes::Finesse);
+
+        match roll {
+            1 => return rapier,
+            2 => return hefaxe,
+            3 => return bbow,
+            4 => return clearorb,
+            5 => return haxe,
+            6 => return ssword,
+            7 => return fbow,
+            8 => return nsorb,
+            9 => return ugs,
+            10 => return bfkatana,
+            _ => return rapier, 
+        }
     }
 }
 
@@ -54,6 +98,10 @@ impl Armor {
             bonus: bonus,
             bulky: bulky,
         }
+    }
+
+    pub fn loot() -> Armor {
+
     }
 }
 
@@ -79,6 +127,10 @@ impl Spell {
             enemy_save: save,
             multi: mult,
         }
+    }
+
+    pub fn loot() -> Spell {
+
     }
 }
 
@@ -159,5 +211,19 @@ impl Chest {
 
     pub fn add(&mut self, it: ItemType) {
         self.items.push(it);
+    }
+
+    pub fn open(&self, c: &mut Character) {
+        //loop
+        for item in &self.items {
+            //get each
+            match item {
+                ItemType::Weapon => c.i_weapons.push(Weapon::loot()),
+                ItemType::Armor => c.i_armor.push(Armor::loot()),
+                ItemType::Spell => c.i_spells.push(Spell::loot()),
+                ItemType::Potion => todo!(),
+                ItemType::Gold => todo!(),
+            }
+        }
     }
 }

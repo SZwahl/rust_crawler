@@ -66,7 +66,7 @@ impl Room {
             if &e.key == e_str {
                 let damage_roll = roll(c.e_weapon.roll.as_str());
                 let d_mod = c.get_wep_mod();
-                let damage_total: i32 = damage_roll.total as i32 + i32::from(d_mod);
+                let damage_total: i32 = damage_roll.total as i32 + i32::from(d_mod) + c.e_weapon.modifier;
             
                 //construct breakdown
                 let mut brkdwn = damage_roll.individuals;
@@ -107,7 +107,7 @@ impl Room {
         //Roll result
         let damage_roll = roll(&s.damage);
         let d_mod = c.get_wep_mod();
-        let damage_total: i32 = damage_roll.total as i32 + i32::from(d_mod);
+        let damage_total: i32 = damage_roll.total as i32 + i32::from(d_mod) + c.e_weapon.modifier;
     
         //construct breakdown
         let mut brkdwn = damage_roll.individuals;
