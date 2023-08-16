@@ -3,6 +3,7 @@ use std::collections::HashMap;
 
 use crate::creature::*;
 use crate::character::*;
+use crate::equipment::Spell;
 use crate::roll::*;
 
 #[derive(Clone)]
@@ -48,11 +49,12 @@ impl Room {
     }
 
     pub fn attack_enemy(&mut self, e_str: &str, c: &Character) -> IsDead {
-        //roll damage
-        let r = &mut self.enemies;
+        //Get enemies
+        let room_enemies = &mut self.enemies;
 
-        for num in 0..r.len() {
-            let e = &mut r[num];
+        //loop and attack valid one
+        for num in 0..room_enemies.len() {
+            let e = &mut room_enemies[num];
             //is valid
             if &e.name_s == e_str {
                 let damage_roll = roll(c.e_weapon.roll.as_str());
@@ -78,7 +80,7 @@ impl Room {
                     }
                     IsDead::Dead => {
                         println!("{} dies!", e.name);
-                        r.remove(num);
+                        room_enemies.remove(num);
                     }
                     IsDead::Invalid => todo!(),
                 }
@@ -89,6 +91,47 @@ impl Room {
         }
         println!("Invalid enemy \"{}\"", e_str);
         return IsDead::Invalid;
+    }
+
+    pub fn cast_spell(&mut self, e_str: &str, s: &Spell, c: &Character){
+        //Get enemies
+        let room_enemies = &mut self.enemies;
+
+        //Roll result
+        let damage_roll = roll(&s.damage);
+        let d_mod = c.get_wep_mod();
+        let damage_total: i32 = damage_roll.total as i32 + i32::from(d_mod);
+    
+        //construct breakdown
+        let mut brkdwn = damage_roll.individuals;
+        //brkdwn.insert(0, '');
+        brkdwn.push_str("+");
+    
+        //print breakdown
+        println!("{}. You roll a {} ({}{})", s.cast_desc, damage_total, brkdwn, d_mod);
+
+        //loop and cast spell on valid
+        for num in 0..room_enemies.len() {
+            let e = &mut room_enemies[num];
+            //is valid
+            if &e.name_s == e_str || s.multi { 
+                let condition: &mut Condition = &mut e.con;
+                //apply to enemy
+                let is_dead = condition.damage(damage_total, &String::from("You"), &e.name);
+
+                match is_dead {
+                    IsDead::Ok => {
+                        println!("{} has {} hp left!", e.name, condition.c_hp);
+                    }
+                    IsDead::Dead => {
+                        println!("{} dies!", e.name);
+                        room_enemies.remove(num);
+                    }
+                    IsDead::Invalid => todo!(),
+                }
+
+            }
+        }
     }
 }
 

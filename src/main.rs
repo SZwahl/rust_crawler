@@ -162,8 +162,7 @@ pub fn dungeon_loop(c: &mut Character) {
         //check double-word commands
         if parts.len() == 2 { 
             //enter
-            if parts[0].trim() == "enter"
-            {
+            if parts[0].trim() == "enter" {
                 let goto = parts[1].trim();
                 
                 lookup_room(goto, &mut dungeon);
@@ -176,6 +175,47 @@ pub fn dungeon_loop(c: &mut Character) {
                 if is_dead.expect("uh") != IsDead::Invalid {
                     combat_action = true;
                 }
+            }
+        }
+        if parts.len() == 4 {
+            //cast
+            if parts[0].trim() == "cast" && parts[2].trim() == "on" {
+                //check components valid
+                let s_name = parts[1].trim();
+                let e_name = parts[3].trim();
+                let mut spell = random_spell(1);
+                let mut s_valid = false;
+                let mut enemy = String::from("");
+                let mut e_valid = false;
+
+                //Spell valid?
+                for s in &c.i_spells {
+                    if s_name == s.name {
+                        spell = s.clone();
+                        s_valid = true;
+                        break;
+                    }
+                }
+                if !s_valid {
+                    println!("Invalid spell name!")
+                    continue;
+                }
+
+                //Enemy valid?
+                for e in &dungeon.cur_room().enemies {
+                    if e_name == e.name {
+                        e_valid = true;
+                        break;
+                    }
+                }
+                if !e_valid {
+                    println!("Invalid enemy name!");
+                    continue;
+                }
+
+                //Cast the spell!
+                dungeon.map.get_mut(&dungeon.cur).map(|val| val.cast_spell(e_name, &spell, c));
+                combat_action = true;
             }
         }
         else {

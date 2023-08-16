@@ -11,3 +11,4 @@ These actions are free
 ## Combat Commands
 These actions will advnace combat, provoking attacks from surviving enemies.
 * attack [x]
+* cast [x] on [y]
