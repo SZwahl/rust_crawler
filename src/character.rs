@@ -107,6 +107,24 @@ impl Character {
         println!("Stowed {} in inventory.", w.name);
     }
 
+    pub fn swap_armor(&mut self, a: &Armor) {
+        //cache old weapon
+        let old: Armor = self.e_armor.clone();
+        self.condition.armor -= old.bonus;
+    
+        //Set new weapon
+        self.e_armor = a.clone();
+        self.condition.armor += a.bonus;
+    
+        //Add old to inventory if not unarmed
+        if old.name != "Uarmored"
+        {
+            self.i_armor.push(old.clone());
+        }
+    
+        println!("Swapped {} for {} (Total: {}).", old.name, a.name, self.condition.armor);
+    }
+
     pub fn learn_spell(&mut self, s: Spell){
         self.i_spells.push(s.clone());
         println!("Engraved {}({}) to spell memory.", s.name, s.key);

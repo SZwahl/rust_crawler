@@ -240,7 +240,7 @@ impl Chest {
                 },
                 ItemType::Armor => {
                     let arm = Armor::loot();
-                    println!("Found {}", arm.name);
+                    println!("Found {} [{}]", arm.name, arm.key);
                     c.i_armor.push(arm);
                 },
                 ItemType::Spell => {

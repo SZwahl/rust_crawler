@@ -301,6 +301,12 @@ pub fn dungeon_loop(c: &mut Character) {
                 }
 
                 //loop thru armor
+                for arm in c.i_armor.clone() {
+                    if arm.key == eq_name {
+                        c.swap_armor(&arm);
+                        continue;
+                    }
+                }
             }
         }
         else if parts.len() == 4 {
@@ -368,11 +374,13 @@ pub fn dungeon_loop(c: &mut Character) {
             //loop through enemies and they attack
             for e in &dungeon.cur_room().enemies {
 
-                let damage_total = 2;
+                let damage_total = roll(&e.attacks[0].damage).total as i32;
                 let mut e_name = e.name.clone();
                 e_name.push_str(" (");
                 e_name.push_str(&e.key);
                 e_name.push_str(")");
+
+                println!("{} {}.", e_name, e.attacks[0].desc);
 
                 //get condition
                 let condition: &mut Condition = &mut c.condition;

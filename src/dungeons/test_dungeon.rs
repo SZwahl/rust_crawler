@@ -38,8 +38,8 @@ fn room2() -> Room {
     let mut skeleton = Creature::new("Skeleton", "S", Condition::new(4, 6, 8, 2));
     skeleton.add_attack(
         Attack::new(
-            "swings its sword", 
-            "1d6", 
+            "swings its rusty sword", 
+            "1d3", 
             StatTypes::None, 
             StatTypes::None, 
             "0")
@@ -68,7 +68,7 @@ fn room3() -> Room {
     bat.add_attack(
         Attack::new(
             "shrieks, emitting a sonic boom",
-            "1d6",
+            "1d4",
             StatTypes::Mind,
             StatTypes::Mind,
             "2",
@@ -77,7 +77,7 @@ fn room3() -> Room {
     bat.add_attack(
         Attack::new(
             "bites at you with razor-sharp fangs",
-            "1d8",
+            "1d6",
             StatTypes::None,
             StatTypes::None,
             "0"
@@ -93,6 +93,9 @@ fn room3() -> Room {
     );
     sunken_chest.add(ItemType::Weapon);
     sunken_chest.add(ItemType::Armor);
+    sunken_chest.add(ItemType::Potion);
+    sunken_chest.add(ItemType::Potion);
+    sunken_chest.add(ItemType::Spell);
     room3.add_chest(sunken_chest);
 
     return room3;
