@@ -34,6 +34,8 @@ fn main() {
     //load adventure
     println!("Beginning dungeon...");
     dungeon_loop(&mut c);
+
+    wait_for_input();
 }
 
 fn choose_equipment(c: &mut Character){
