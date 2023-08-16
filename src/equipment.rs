@@ -129,3 +129,35 @@ pub fn random_spell(num: u32) -> Spell
             _ => return lightning_bolt, 
         }
 }
+
+#[derive(Clone)]
+pub enum ItemType {
+    Weapon,
+    Armor,
+    Spell,
+    Potion,
+    Gold,
+}
+
+#[derive(Clone)]
+pub struct Chest {
+    pub name: String,
+    pub key: String,
+    pub context: String,
+    pub items: Vec<ItemType>,
+}
+
+impl Chest {
+    pub fn new(n: &str, k: &str, c: &str) -> Self {
+        Self {
+            name: String::from(n),
+            key: String::from(k),
+            context: String::from(c),
+            items: Vec::new(),
+        }
+    }
+
+    pub fn add(&mut self, it: ItemType) {
+        self.items.push(it);
+    }
+}

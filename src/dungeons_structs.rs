@@ -3,6 +3,7 @@ use std::collections::HashMap;
 
 use crate::creature::*;
 use crate::character::*;
+use crate::equipment::Chest;
 use crate::equipment::Spell;
 use crate::roll::*;
 
@@ -11,6 +12,7 @@ pub struct Room {
     pub id: u32,
     pub desc: String,
     pub exits: Vec<Link>,
+    pub chests: Vec<Chest>,
     pub enemies: Vec<Creature>,
 }
 
@@ -20,6 +22,7 @@ impl Room {
             id: id,
             desc: String::from(""),
             exits: Vec::new(),
+            chests: Vec::new(),
             enemies: Vec::new(),
         }
     }
@@ -30,6 +33,10 @@ impl Room {
 
     pub fn add_link(&mut self, link: Link) {
         self.exits.push(link);
+    }
+
+    pub fn add_chest(&mut self, chest: Chest) {
+        self.chests.push(chest);
     }
 
     pub fn add_enemies(&mut self, enemy: Creature, amt: u32) {
@@ -135,6 +142,19 @@ impl Room {
             else { num += 1; }
             if num == room_enemies.len() { break; }
         }
+    }
+
+    pub fn open_chest(&mut self, c_name: &str, character: &mut Character) {
+        //loop and find chest
+        for num in 0..self.chests.len() {
+            if c_name == self.chests[num].key {
+
+                println!("scoop");                
+                self.chests.remove(num);
+                return;
+            }
+        }
+        println!("Invalid target");
     }
 }
 

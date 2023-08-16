@@ -259,6 +259,13 @@ pub fn dungeon_loop(c: &mut Character) {
                     combat_action = true;
                 }
             }
+            //open
+            else if parts[0].trim() == "open" {
+                let target_name = parts[1].trim();
+
+                dungeon.map.get_mut(&dungeon.cur).map(|val| val.open_chest(target_name, c));
+                combat_action = true;
+            }
         }
         else if parts.len() == 4 {
             //cast
@@ -384,6 +391,12 @@ fn enter_room(r: u32, dun: &mut Dungeon) {
         }
 
         println!("{e_desc}");
+    }
+
+    if room.chests.len() > 0 {
+        for chest in &room.chests {
+            println!("There is a {} {}.", chest.name, chest.context);
+        }
     }
 
     dun.cur = room.id;
