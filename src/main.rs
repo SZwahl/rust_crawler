@@ -20,15 +20,16 @@ fn main() {
     println!("-------------------------------------\n-------------------------------------");
 
     //Chargen
-    let mut c = Character::new_character();
+    let tup: (u32, u32) = statgen();
+    let mut c = Character::new_character(tup.0, tup.1);
+    println!("-------------------------------------\n-------------------------------------");
     c.print_character();
-
-    wait_for_continue();
 
     //Choose equipment
     choose_equipment(&mut c);
 
     wait_for_continue();
+    println!("-------------------------------------\n-------------------------------------");
 
     //load adventure
     println!("Beginning dungeon...");
@@ -84,7 +85,7 @@ fn choose_equipment(c: &mut Character){
             }
             else if selection == 4
             {
-                let orb = Weapon::new("Clouded Orb", "manipulate", "focus", true, StatTypes::Mind);
+                let orb = Weapon::new("Clouded Orb (spell focus)", "bash ineffectively", "1d1", true, StatTypes::Mind);
                 c.swap_weapon(orb);
                 let spell = random_spell(roll("1d4").total);
                 c.learn_spell(spell);
@@ -112,6 +113,78 @@ fn wait_for_continue(){
         .expect("Failed to read line!");
 
         println!("------------------------------------------------------------------------");
+}
+
+pub fn statgen() -> (u32, u32) {
+    let mut adv = 0;
+    let mut dis = 0;
+    println!("Pick a statistic to roll with advantage:
+    \t1) Power
+    \t2) Finesse
+    \t3) Mind
+    \t4) None (all stats roll norally)"
+    );
+    loop {
+        let mut selection = String::new();
+        io::stdin()
+        .read_line(&mut selection)
+        .expect("Failed to read line!");
+    
+        let selection: u32 = match selection.trim().parse() {
+        Ok(num) => num,
+        Err(_) => {
+            println!("invalid choice"); 
+            continue;
+        },
+        };
+
+        let range = 0..=4;
+        if !range.contains(&selection) { 
+            println!("Please choose a valid option.");
+            continue; 
+        }
+
+        if selection == 4 { return (0,0);}
+        else { 
+            adv = selection; 
+
+            println!("Pick a statistic to roll with disadvantage:
+            \t1) Power
+            \t2) Finesse
+            \t3) Mind
+            ");
+
+            loop {
+                let mut selection = String::new();
+                io::stdin()
+                .read_line(&mut selection)
+                .expect("Failed to read line!");
+            
+                let selection: u32 = match selection.trim().parse() {
+                Ok(num) => num,
+                Err(_) => {
+                    println!("invalid choice"); 
+                    continue;
+                },
+                };
+        
+                let range = 0..=3;
+                if !range.contains(&selection) { 
+                    println!("Please choose a valid option.");
+                    continue; 
+                }
+                else if selection == adv {
+                    println!("Disadvantage option cannot be the same as advantage option?");
+                    continue;
+                }
+    
+                dis = selection;
+                return (adv, dis);
+            }
+            return (0,0);
+        }
+        return (0,0);
+    }
 }
 
 
@@ -142,34 +215,34 @@ pub fn dungeon_loop(c: &mut Character) {
             continue; 
         }
         //look
-        if parts[0].trim() == "look"
+        else if parts[0].trim() == "look"
         {
             println!("{}.", dungeon.cur_room().desc);
             continue;
         }
         //Inventory
-        if parts[0].trim() == "inventory"
+        else if parts[0].trim() == "inventory"
         {
             c.print_inventory();
             continue;
         }
-        if parts[0].trim() == "spells" {
+        else if parts[0].trim() == "spells" {
             c.print_spells();
             continue;
         }
         //hp
-        if parts[0] == "hp"
+        else if parts[0] == "hp"
         {
             println!("You have {} HP left.", c.condition.c_hp);
             continue;
         }
         //stats
-        if parts[0] == "stats" {
+        else  if parts[0] == "stats" {
             c.print_character();
             continue;
         }
         //check double-word commands
-        if parts.len() == 2 { 
+        else if parts.len() == 2 { 
             //enter
             if parts[0].trim() == "enter" {
                 let goto = parts[1].trim();
@@ -187,7 +260,7 @@ pub fn dungeon_loop(c: &mut Character) {
                 }
             }
         }
-        if parts.len() == 4 {
+        else if parts.len() == 4 {
             //cast
             if parts[0].trim() == "cast" && parts[2].trim() == "on" {
                 //check components valid
@@ -243,7 +316,7 @@ pub fn dungeon_loop(c: &mut Character) {
             continue; 
         }
 
-
+        println!("time to bring the hurt");
         if combat_action {
             //loop through enemies and they attack
             for e in &dungeon.cur_room().enemies {

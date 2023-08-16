@@ -36,3 +36,23 @@ pub fn roll(input: &str) -> Roll {
 
     return result;
 }
+
+pub fn roll_adv(input: &str) -> Roll {
+    //roll options
+    let r1 = roll(input);
+    let r2 = roll(input);
+
+    //return higher
+    if r1.total >= r2.total { return r1; }
+    else { return r2; }
+}
+
+pub fn roll_dis(input: &str) -> Roll {
+        //roll options
+        let r1 = roll(input);
+        let r2 = roll(input);
+    
+        //return lower
+        if r1.total <= r2.total { return r1; }
+        else { return r2; }
+}

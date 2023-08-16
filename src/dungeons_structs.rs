@@ -133,6 +133,7 @@ impl Room {
                 }
 
             }
+            println!("Current num is {} out of {}", num, room_enemies.len());
             if num == room_enemies.len() { break; }
         }
     }

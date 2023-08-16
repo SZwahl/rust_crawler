@@ -20,15 +20,29 @@ pub struct Character {
 }
 
 impl Character {
-    pub fn new_character() -> Self {
+    pub fn new_character(adv: u32, dis: u32) -> Self {
 
-        let stat1 = roll("3d6").total;
-        let stat2 = roll("3d6").total;
-        let stat3 = roll("3d6").total;
-        let hit_p = roll("2d6").total;
+        let mut stats: [u32; 3] = [0,0,0];
+
+        for s in 0..stats.len() {
+            if adv == 0 {
+                stats[s] = roll("3d6").total;
+            }
+            if adv == s as u32 +1 {
+                stats[s] = roll_adv("3d6").total;
+            }
+            else if dis == s as u32 +1 {
+                stats[s] = roll_dis("3d6").total;
+            }
+            else {
+                stats[s] = roll("3d6").total;
+            }
+        }
+        
+        let hit_p = 4 + roll("1d3").total;
         
         Self {
-            condition: Condition::new(hit_p, stat1, stat2, stat3),
+            condition: Condition::new(hit_p, stats[0], stats[1], stats[2]),
 
             e_weapon: Weapon::new("Unarmed", "punch", "1d4", false, StatTypes::Power),
             e_armor: Armor::new("Unarmored", 0, false),
