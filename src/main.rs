@@ -159,6 +159,11 @@ pub fn dungeon_loop(c: &mut Character) {
             println!("You have {} HP left.", c.condition.c_hp);
             continue;
         }
+        //stats
+        if parts[0] == "stats" {
+            c.print_character();
+            continue;
+        }
         //check double-word commands
         if parts.len() == 2 { 
             //enter
@@ -213,9 +218,19 @@ pub fn dungeon_loop(c: &mut Character) {
                     continue;
                 }
 
-                //Cast the spell!
-                dungeon.map.get_mut(&dungeon.cur).map(|val| val.cast_spell(e_name, &spell, c));
-                combat_action = true;
+                //Check cost
+                if c.condition.c_mind >= spell.cost {
+                    //Exact the price
+                    c.condition.c_mind -= spell.cost;
+                    //Cast the spell!
+                    dungeon.map.get_mut(&dungeon.cur).map(|val| val.cast_spell(e_name, &spell, c));
+                    combat_action = true;
+                }
+                else {
+                    println!("Spell is too costly to the mind! You must rest.");
+                    continue;
+                }
+
             }
         }
         else {
