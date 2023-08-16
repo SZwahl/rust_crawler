@@ -94,7 +94,6 @@ fn room3() -> Room {
     sunken_chest.add(ItemType::Weapon);
     sunken_chest.add(ItemType::Armor);
     sunken_chest.add(ItemType::Potion);
-    sunken_chest.add(ItemType::Potion);
     sunken_chest.add(ItemType::Spell);
     room3.add_chest(sunken_chest);
 

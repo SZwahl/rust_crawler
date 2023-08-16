@@ -94,6 +94,9 @@ fn choose_equipment(c: &mut Character){
                 c.learn_spell(spell);
             }
 
+            println!("You start with 1 potion. Type 'quaff' to drink and regain health.");
+            c.i_potions += 1;
+
             break;
     }
 }
