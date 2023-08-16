@@ -195,7 +195,6 @@ pub fn dungeon_loop(c: &mut Character) {
                 let e_name = parts[3].trim();
                 let mut spell = random_spell(1);
                 let mut s_valid = false;
-                let mut enemy = String::from("");
                 let mut e_valid = false;
 
                 //Spell valid?

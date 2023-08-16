@@ -6,6 +6,8 @@ Simple dungeon crawler written in Rust.
 These actions are free
 * look
 * inventory
+* spells
+* stats
 * enter [hallway]
 
 ## Combat Commands
