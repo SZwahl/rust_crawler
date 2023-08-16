@@ -9,8 +9,10 @@ These actions are free
 * spells
 * stats
 * enter [hallway]
+* swap [equipment]
 
 ## Combat Commands
 These actions will advnace combat, provoking attacks from surviving enemies.
-* attack [x]
-* cast [x] on [y]
+* attack [enemy]
+* cast [spell] on [enemy]
+* open [chest]

@@ -14,6 +14,7 @@ pub struct Character {
     pub e_shield: bool,
 
     //Inventory
+    pub i_shield: bool,
     pub i_weapons: Vec<Weapon>,
     pub i_armor: Vec<Armor>,
     pub i_spells: Vec<Spell>,
@@ -44,10 +45,11 @@ impl Character {
         Self {
             condition: Condition::new(hit_p, stats[0], stats[1], stats[2]),
 
-            e_weapon: Weapon::new("Unarmed", "punch", "1d4", 0, false, StatTypes::Power),
-            e_armor: Armor::new("Unarmored", 0, false),
+            e_weapon: Weapon::new("Unarmed", "unarmed", "punch", "1d4", 0, false, StatTypes::Power),
+            e_armor: Armor::new("Unarmored", "unarmored", 0, false),
             e_shield: false,
 
+            i_shield: false,
             i_weapons: Vec::new(),
             i_armor: Vec::new(),
             i_spells: Vec::new(),
@@ -81,11 +83,14 @@ impl Character {
         }
     }
 
-    pub fn swap_weapon(&mut self, w: Weapon){
+    pub fn swap_weapon(&mut self, w: &Weapon){
         if w.bulky && self.e_shield
         {
-            println!("You must unequip your shield to hold a bulky weapon.");
-            return;
+            println!("This weapon is bulky! Shield unequipped.");
+            self.e_shield = false;
+            self.i_shield = true;
+            self.condition.armor -= 1;
+            println!("Shield equipped. Your armor is now {}.", self.condition.armor);
         }
 
         //cache old weapon
@@ -122,6 +127,7 @@ impl Character {
         }
 
         //set true and armor up
+        self.i_shield = false;
         self.e_shield = true;
         self.condition.armor += 1;
         println!("Shield equipped. Your armor is now {}.", self.condition.armor);
@@ -131,15 +137,26 @@ impl Character {
     {
         println!("You have are weilding {} ({})", self.e_weapon.name, self.e_weapon.roll);
         println!("You have {} armor from wearing {} (+{}). ", self.condition.armor, self.e_armor.name, self.e_armor.bonus);
+        
+        if self.e_shield {
+            println!("You have a shield contributing 1 armor");
+        }
+        else if self.i_shield {
+            println!("You have an unequipped [Shield].");
+        }
+        else {
+            println!("You have no shield available.");
+        }
+
         println!("[Weapons]");
         for wep in &self.i_weapons
         {
-            println!("*\t{}", wep.name);
+            println!("*\t{} [{}]", wep.name, wep.key);
         }
         println!("[Armor]");
         for arm in &self.i_armor
         {
-            println!("*\t{}", arm.name);
+            println!("*\t{} [{}]", arm.name, arm.key);
         }
         println!("[Spells]");
         for spel in &self.i_spells

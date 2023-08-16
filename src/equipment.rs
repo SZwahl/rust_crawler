@@ -11,6 +11,7 @@ use crate::{creature::StatTypes, character::Character, roll::{Roll, roll}};
 #[derive(Clone)]
 pub struct Weapon {
     pub name: String,
+    pub key: String,
     pub verb: String,
     pub roll: String,
     pub modifier: i32,
@@ -19,9 +20,10 @@ pub struct Weapon {
 }
 
 impl Weapon {
-    pub fn new(n: &str, v: &str, r: &str, m: i32, b: bool, t: StatTypes) -> Self {
+    pub fn new(n: &str, k: &str, v: &str, r: &str, m: i32, b: bool, t: StatTypes) -> Self {
         Self {
             name: String::from(n),
+            key: String::from(k),
             verb: String::from(v),
             roll: String::from(r),
             modifier: m,
@@ -56,17 +58,17 @@ impl Weapon {
     pub fn loot() -> Weapon {
         let roll = roll("1d10").total;
         
-        let rapier = Weapon::new("Shiny Rapier", "slash", "1d6", 1, false, StatTypes::Finesse);
-        let hefaxe = Weapon::new("Hefty Warhammer", "swing hard", "1d8", 1, true, StatTypes::Power);
-        let bbow = Weapon::new("Blackwood Bow", "shoot", "1d8", 1, true, StatTypes::Finesse);
-        let clearorb = Weapon::new("Clear Orb (spell focus)", "attack using", "1d1", 1, true, StatTypes::Mind);
-        let haxe = Weapon::new("Moonsteel Hand-axe", "hack", "1d8", 1, false, StatTypes::Power);
+        let rapier = Weapon::new("Shiny Rapier", "srap", "slash", "1d6", 1, false, StatTypes::Finesse);
+        let hefaxe = Weapon::new("Hefty Warhammer", "hefham", "swing hard", "1d8", 1, true, StatTypes::Power);
+        let bbow = Weapon::new("Blackwood Bow", "bwbow", "shoot", "1d8", 1, true, StatTypes::Finesse);
+        let clearorb = Weapon::new("Clear Orb (spell focus)", "corb", "attack using", "1d1", 1, true, StatTypes::Mind);
+        let haxe = Weapon::new("Moonsteel Hand-axe", "msha", "hack", "1d8", 1, false, StatTypes::Power);
 
-        let ssword = Weapon::new("Runed Longsword", "slash valiantly with", "1d8", 2, false, StatTypes::Power);
-        let fbow = Weapon::new("Magma Bow", "shoot a fiery shot from", "1d10", 2, true, StatTypes::Finesse);
-        let nsorb = Weapon::new("Night-Sky Orb", "attack using", "1d1", 4, true, StatTypes::Mind);
-        let ugs = Weapon::new("Dragon-tail Greatsword", "heave", "1d10", 2, true, StatTypes::Power);
-        let bfkatana = Weapon::new("Billion-fold Katana", "flash", "1d10", 3, true, StatTypes::Finesse);
+        let ssword = Weapon::new("Runed Longsword", "rls", "slash valiantly with", "1d8", 2, false, StatTypes::Power);
+        let fbow = Weapon::new("Magma Bow", "magb", "shoot a fiery shot from", "1d10", 2, true, StatTypes::Finesse);
+        let nsorb = Weapon::new("Night-Sky Orb", "nso", "attack using", "1d1", 4, true, StatTypes::Mind);
+        let ugs = Weapon::new("Dragon-tail Greatsword", "dtg", "heave", "1d10", 2, true, StatTypes::Power);
+        let bfkatana = Weapon::new("Billion-fold Katana", "bfk", "flash", "1d10", 3, true, StatTypes::Finesse);
 
         match roll {
             1 => return rapier,
@@ -87,21 +89,34 @@ impl Weapon {
 #[derive(Clone)]
 pub struct Armor {
     pub name: String,
+    pub key: String,
     pub bonus: u32,
     pub bulky: bool,
 }
 
 impl Armor {
-    pub fn new(n: &str, bonus: u32, bulky: bool) -> Self {
+    pub fn new(n: &str, k: &str, bonus: u32, bulky: bool) -> Self {
         Self {
             name: String::from(n),
+            key: String::from(k),
             bonus: bonus,
             bulky: bulky,
         }
     }
 
     pub fn loot() -> Armor {
+        let r = roll("1d6").total;
 
+        let a = Armor::new("Protective robes", "pr", 1, false);
+        let b = Armor::new("Runed Chains", "rc", 2, false);
+        let c = Armor::new("Floating Guardians", "fg", 3, false);
+
+        match r {
+            1 | 2 => return a,
+            3 | 4 | 5 => return b,
+            6 => return c,
+            _ => return a,
+        }
     }
 }
 
@@ -129,9 +144,9 @@ impl Spell {
         }
     }
 
-    pub fn loot() -> Spell {
+    // pub fn loot() -> Spell {
 
-    }
+    // }
 }
 
 pub fn random_spell(num: u32) -> Spell 
@@ -218,9 +233,33 @@ impl Chest {
         for item in &self.items {
             //get each
             match item {
-                ItemType::Weapon => c.i_weapons.push(Weapon::loot()),
-                ItemType::Armor => c.i_armor.push(Armor::loot()),
-                ItemType::Spell => c.i_spells.push(Spell::loot()),
+                ItemType::Weapon => {
+                    let wep = Weapon::loot();
+                    c.acquire_weapon(wep);
+                },
+                ItemType::Armor => {
+                    let arm = Armor::loot();
+                    println!("Found {}", arm.name);
+                    c.i_armor.push(arm);
+                },
+                ItemType::Spell => {
+                    let mut already_have = false;
+                    let spell = random_spell(roll("1d4").total);
+                    for s in &c.i_spells {
+                        if s.name == spell.name {
+                            already_have = true;
+                            break;
+                        }
+                    }
+                    if already_have {
+                        println!("Already have {}!", spell.name);
+                    }
+                    else {
+                        println!("Found {}.", spell.name);
+                        c.learn_spell(spell);
+                    }
+                    
+                }
                 ItemType::Potion => todo!(),
                 ItemType::Gold => todo!(),
             }

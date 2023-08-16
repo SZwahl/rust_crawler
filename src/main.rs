@@ -67,26 +67,27 @@ fn choose_equipment(c: &mut Character){
 
             if selection == 1
             {
-                let sword = Weapon::new("Sword", "slash", "1d6", 0, false, StatTypes::Power);
-                c.swap_weapon(sword);
+                let sword = Weapon::new("Sword", "sword", "slash", "1d6", 0, false, StatTypes::Power);
+                c.swap_weapon(&sword);
+                c.i_shield = true;
                 c.equip_shield();
             }
             else if selection == 2
             {
-                let greataxe = Weapon::new("Greataxe", "swing", "1d8", 0, true, StatTypes::Power);
-                c.swap_weapon(greataxe);
+                let greataxe = Weapon::new("Greataxe", "greataxe", "swing", "1d8", 0, true, StatTypes::Power);
+                c.swap_weapon(&greataxe);
             }
             else if selection == 3
             {
-                let bow = Weapon::new("Bow", "shoot", "1d6", 0, true, StatTypes::Finesse);
-                let dagger = Weapon::new("Dagger", "stab with", "1d6", 0, false, StatTypes::Finesse);
-                c.swap_weapon(bow);
+                let bow = Weapon::new("Bow", "bow", "shoot", "1d6", 0, true, StatTypes::Finesse);
+                let dagger = Weapon::new("Dagger", "dag", "stab with", "1d6", 0, false, StatTypes::Finesse);
+                c.swap_weapon(&bow);
                 c.acquire_weapon(dagger);
             }
             else if selection == 4
             {
-                let orb = Weapon::new("Clouded Orb (spell focus)", "bash ineffectively", "1d1", 0, true, StatTypes::Mind);
-                c.swap_weapon(orb);
+                let orb = Weapon::new("Clouded Orb (spell focus)", "orb", "bash ineffectively", "1d1", 0, true, StatTypes::Mind);
+                c.swap_weapon(&orb);
                 let spell = random_spell(roll("1d4").total);
                 c.learn_spell(spell);
             }
@@ -181,9 +182,7 @@ pub fn statgen() -> (u32, u32) {
                 dis = selection;
                 return (adv, dis);
             }
-            return (0,0);
         }
-        return (0,0);
     }
 }
 
@@ -265,6 +264,31 @@ pub fn dungeon_loop(c: &mut Character) {
 
                 dungeon.map.get_mut(&dungeon.cur).map(|val| val.open_chest(target_name, c));
                 combat_action = true;
+            }
+            //swap wep
+            else if parts[0].trim() == "swap" {
+                let eq_name = parts[1].trim();
+
+                //shield
+                if eq_name == "Shield" {
+                    if c.i_shield {
+                        c.equip_shield();
+                    }
+                    else {
+                        println!("No shield available!");
+                    }
+                    continue;
+                }
+
+                //loop thru weps
+                for wep in c.i_weapons.clone() {
+                    if wep.key == eq_name {
+                        c.swap_weapon(&wep);
+                        continue;
+                    }
+                }
+
+                //loop thru armor
             }
         }
         else if parts.len() == 4 {
