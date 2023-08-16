@@ -43,7 +43,7 @@ impl Room {
         for ix in 1..=amt{
             let mut e = enemy.clone();
            //e.name_s.push_str("_");
-            e.name_s.push_str(ix.to_string().as_str()); 
+            e.key.push_str(ix.to_string().as_str()); 
             self.enemies.push(e);
         }
     }
@@ -56,7 +56,7 @@ impl Room {
         for num in 0..room_enemies.len() {
             let e = &mut room_enemies[num];
             //is valid
-            if &e.name_s == e_str {
+            if &e.key == e_str {
                 let damage_roll = roll(c.e_weapon.roll.as_str());
                 let d_mod = c.get_wep_mod();
                 let damage_total: i32 = damage_roll.total as i32 + i32::from(d_mod);
@@ -67,7 +67,7 @@ impl Room {
                 brkdwn.push_str("+");
             
                 //print breakdown
-                println!("You {} your {}, rolling a {} ({}{})", c.e_weapon.verb, c.e_weapon.name, damage_total, brkdwn, d_mod);
+                println!("You {} your {}, rolling a total of {} ({}{})", c.e_weapon.verb, c.e_weapon.name, damage_total, brkdwn, d_mod);
             
             
                 let condition: &mut Condition = &mut e.con;
@@ -108,13 +108,14 @@ impl Room {
         brkdwn.push_str("+");
     
         //print breakdown
-        println!("{}. You roll a {} ({}{})", s.cast_desc, damage_total, brkdwn, d_mod);
+        println!("{}. You roll a total of {} ({}{})", s.cast_desc, damage_total, brkdwn, d_mod);
 
         //loop and cast spell on valid
-        for num in 0..room_enemies.len() {
+        let mut num = 0;
+        loop {
             let e = &mut room_enemies[num];
             //is valid
-            if &e.name_s == e_str || s.multi { 
+            if &e.key == e_str || s.multi { 
                 let condition: &mut Condition = &mut e.con;
                 //apply to enemy
                 let is_dead = condition.damage(damage_total, &String::from("You"), &e.name);
@@ -122,6 +123,7 @@ impl Room {
                 match is_dead {
                     IsDead::Ok => {
                         println!("{} has {} hp left!", e.name, condition.c_hp);
+                        num+=1;
                     }
                     IsDead::Dead => {
                         println!("{} dies!", e.name);
@@ -131,6 +133,7 @@ impl Room {
                 }
 
             }
+            if num == room_enemies.len() { break; }
         }
     }
 }

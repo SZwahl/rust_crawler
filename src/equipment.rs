@@ -110,9 +110,9 @@ pub fn random_spell(num: u32) -> Spell
             Spell::new(
                 "Moonbeams",
                 "mb",
-                "Your orb glows bale blue and refracts large discs of light into the enemy.",
+                "Your orb glows and refracts pale blue beams into the enemy.",
                 1,
-                "1d6",
+                "1d4",
                 StatTypes::None,
                 true
             );

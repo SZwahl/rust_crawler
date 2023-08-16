@@ -213,7 +213,7 @@ pub fn dungeon_loop(c: &mut Character) {
 
                 //Enemy valid?
                 for e in &dungeon.cur_room().enemies {
-                    if e_name == e.name {
+                    if e_name == e.key {
                         e_valid = true;
                         break;
                     }
@@ -227,6 +227,7 @@ pub fn dungeon_loop(c: &mut Character) {
                 if c.condition.c_mind >= spell.cost {
                     //Exact the price
                     c.condition.c_mind -= spell.cost;
+                    println!("A toll of {} is exacted on your Mind ({} remaining).",  spell.cost, c.condition.c_mind);
                     //Cast the spell!
                     dungeon.map.get_mut(&dungeon.cur).map(|val| val.cast_spell(e_name, &spell, c));
                     combat_action = true;
@@ -299,7 +300,7 @@ fn enter_room(r: u32, dun: &mut Dungeon) {
         for ix in 0..room.enemies.len() {
             e_desc.push_str(room.enemies[ix].name.as_str());
             e_desc.push_str("(");
-            e_desc.push_str(room.enemies[ix].name_s.as_str());
+            e_desc.push_str(room.enemies[ix].key.as_str());
             e_desc.push_str(")");
 
             if ix != room.enemies.len()-1 {
