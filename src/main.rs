@@ -240,6 +240,16 @@ pub fn dungeon_loop(c: &mut Character) {
             c.print_character();
             continue;
         }
+        //quaff 
+        else if parts[0] == "quaff" {
+            if c.i_potions > 0
+            {
+                c.drink_potion();
+            }
+            else {
+                println!("No potions to quaff.");
+            }
+        }
         //check double-word commands
         else if parts.len() == 2 { 
             //enter

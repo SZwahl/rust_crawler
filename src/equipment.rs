@@ -197,6 +197,7 @@ pub fn random_spell(num: u32) -> Spell
         }
 }
 
+
 #[derive(Clone)]
 pub enum ItemType {
     Weapon,
@@ -260,7 +261,7 @@ impl Chest {
                     }
                     
                 }
-                ItemType::Potion => todo!(),
+                ItemType::Potion => c.acquire_potion(),
                 ItemType::Gold => todo!(),
             }
         }

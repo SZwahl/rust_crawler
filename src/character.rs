@@ -18,6 +18,7 @@ pub struct Character {
     pub i_weapons: Vec<Weapon>,
     pub i_armor: Vec<Armor>,
     pub i_spells: Vec<Spell>,
+    pub i_potions: u32,
 }
 
 impl Character {
@@ -53,6 +54,7 @@ impl Character {
             i_weapons: Vec::new(),
             i_armor: Vec::new(),
             i_spells: Vec::new(),
+            i_potions: 0,
         }
     }
 
@@ -168,6 +170,26 @@ impl Character {
         for spel in &self.i_spells
         {
             println!("*\t{}({})", spel.name, spel.key);
+        }
+    }
+
+    pub fn acquire_potion(&mut self) {
+        self.i_potions += 1;
+    }
+
+    pub fn drink_potion(&mut self) {
+        let mut heal = roll("1d4").total;
+        heal += 2;
+    
+        let max_heal = self.condition.tot_hp - self.condition.c_hp;
+        if heal > max_heal { heal = max_heal;}
+    
+        self.condition.c_hp += heal;
+    
+        println!("Drank potion for {} health. (Now at {}/{})", heal, self.condition.c_hp, self.condition.tot_hp);
+    
+        if max_heal == 0 {
+            println!("You effectively wasted that didn't you?");
         }
     }
 }
