@@ -261,7 +261,10 @@ impl Chest {
                     }
                     
                 }
-                ItemType::Potion => c.acquire_potion(),
+                ItemType::Potion => {
+                    c.acquire_potion();
+                    println!("Found a potion! (total: {})", c.i_potions);
+                },
                 ItemType::Gold => todo!(),
             }
         }

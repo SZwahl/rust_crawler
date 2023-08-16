@@ -208,15 +208,17 @@ pub fn dungeon_loop(c: &mut Character) {
 
         let parts: Vec<&str> = command.split(' ').collect();
 
+
+
         //check single-word commands
         if parts.len() == 0 { 
             println!("Please enter a command");
             continue; 
         }
         //look
-        else if parts[0].trim() == "look"
+        if parts[0].trim() == "look"
         {
-            println!("{}.", dungeon.cur_room().desc);
+            describe_room(dungeon.cur_room());
             continue;
         }
         //Inventory
@@ -230,18 +232,18 @@ pub fn dungeon_loop(c: &mut Character) {
             continue;
         }
         //hp
-        else if parts[0] == "hp"
+        else if parts[0].trim() == "hp"
         {
             println!("You have {} HP left.", c.condition.c_hp);
             continue;
         }
         //stats
-        else  if parts[0] == "stats" {
+        else if parts[0].trim() == "stats" || parts[0].trim() == "self" {
             c.print_character();
             continue;
         }
         //quaff 
-        else if parts[0] == "quaff" {
+        else if parts[0].trim() == "quaff" {
             if c.i_potions > 0
             {
                 c.drink_potion();
@@ -409,6 +411,12 @@ fn enter_room(r: u32, dun: &mut Dungeon) {
     //Lookup room
     let room: &Room = &dun.map[&r];
 
+    describe_room(room);
+
+    dun.cur = room.id;
+}
+
+fn describe_room(room: &Room) {
     println!("{}", room.desc);
 
     for l in &room.exits {
@@ -437,7 +445,4 @@ fn enter_room(r: u32, dun: &mut Dungeon) {
             println!("There is a {} {}.", chest.name, chest.context);
         }
     }
-
-    dun.cur = room.id;
 }
-

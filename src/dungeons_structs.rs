@@ -149,7 +149,7 @@ impl Room {
         for num in 0..self.chests.len() {
             if c_name == self.chests[num].key {
 
-                println!("scoop");                
+                self.chests[num].open(character);           
                 self.chests.remove(num);
                 return;
             }

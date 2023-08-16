@@ -75,14 +75,6 @@ impl Character {
             c.c_power, c.power, c.mod_power,
             c.c_finesse, c.finesse, c.mod_finesse,
             c.c_mind, c.mind, c.mod_mind);
-
-        if self.e_shield
-        {
-            println!("You have a shield equipped (+1)");
-        }
-        else {
-            println!("You have no shield equipped (+0).");
-        }
     }
 
     pub fn swap_weapon(&mut self, w: &Weapon){
@@ -148,6 +140,13 @@ impl Character {
         }
         else {
             println!("You have no shield available.");
+        }
+
+        if self.i_potions == 1 {
+            println!("You have 1 Potion.");
+        }
+        else {
+            println!("You have {} potions.", self.i_potions);
         }
 
         println!("[Weapons]");
