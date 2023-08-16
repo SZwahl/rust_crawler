@@ -81,7 +81,7 @@ fn choose_equipment(c: &mut Character){
             }
             else if selection == 3
             {
-                let bow = Weapon::new("Bow", "bow", "shoot", "1d6", 0, true, StatTypes::Finesse);
+                let bow = Weapon::new("Bow", "bow", "shoot", "1d8", 0, true, StatTypes::Finesse);
                 let dagger = Weapon::new("Dagger", "dag", "stab with", "1d6", 0, false, StatTypes::Finesse);
                 c.swap_weapon(&bow);
                 c.acquire_weapon(dagger);

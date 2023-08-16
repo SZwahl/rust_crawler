@@ -68,7 +68,7 @@ fn room3() -> Room {
     bat.add_attack(
         Attack::new(
             "shrieks, emitting a sonic boom",
-            "1d4",
+            "1d6",
             StatTypes::Mind,
             StatTypes::Mind,
             "2",
