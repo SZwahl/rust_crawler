@@ -131,9 +131,8 @@ impl Room {
                     }
                     IsDead::Invalid => todo!(),
                 }
-
             }
-            println!("Current num is {} out of {}", num, room_enemies.len());
+            else { num += 1; }
             if num == room_enemies.len() { break; }
         }
     }

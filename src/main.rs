@@ -316,17 +316,20 @@ pub fn dungeon_loop(c: &mut Character) {
             continue; 
         }
 
-        println!("time to bring the hurt");
         if combat_action {
             //loop through enemies and they attack
             for e in &dungeon.cur_room().enemies {
 
                 let damage_total = 2;
+                let mut e_name = e.name.clone();
+                e_name.push_str(" (");
+                e_name.push_str(&e.key);
+                e_name.push_str(")");
 
                 //get condition
                 let condition: &mut Condition = &mut c.condition;
                 //apply to you
-                let is_dead = condition.damage(damage_total, &e.name, &String::from("You"));
+                let is_dead = condition.damage(damage_total, &e_name, &String::from("You"));
 
                 if is_dead == IsDead::Ok {
                     println!("You have {} hp left!", condition.c_hp);
