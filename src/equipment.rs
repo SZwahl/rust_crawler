@@ -60,6 +60,7 @@ impl Armor {
 #[derive(Clone)]
 pub struct Spell {
     pub name: String,
+    pub key: String,
     pub cast_desc: String,
     pub cost: u32,
     pub damage: String,
@@ -68,9 +69,10 @@ pub struct Spell {
 }
 
 impl Spell {
-    pub fn new(n: &str, desc: &str, cost: u32, dam: &str, save: StatTypes, mult: bool) -> Self {
+    pub fn new(n: &str, k: &str, desc: &str, cost: u32, dam: &str, save: StatTypes, mult: bool) -> Self {
         Self {
             name: String::from(n),
+            key: String::from(k),
             cast_desc: String::from(desc),
             cost: cost,
             damage: String::from(dam),
@@ -85,6 +87,7 @@ pub fn random_spell(num: u32) -> Spell
     let lightning_bolt = 
         Spell::new(
             "Lightning Bolt", 
+            "lb",
             "Static surrounds your orb and an electric bolt leaps from your fingers.",
         1,
         "1d8",
@@ -95,6 +98,7 @@ pub fn random_spell(num: u32) -> Spell
     let fireball = 
             Spell::new(
                 "Fireball",
+                "f",
                 "Your orb turns white and emits a thin beam, which explodes in a blinding flash.",
                 2,
                 "1d10",
@@ -105,6 +109,7 @@ pub fn random_spell(num: u32) -> Spell
     let moonbeams = 
             Spell::new(
                 "Moonbeams",
+                "mb",
                 "Your orb glows bale blue and refracts large discs of light into the enemy.",
                 1,
                 "1d6",

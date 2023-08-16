@@ -96,7 +96,7 @@ impl Character {
 
     pub fn learn_spell(&mut self, s: Spell){
         self.i_spells.push(s.clone());
-        println!("Engraved {} to spell memory.", s.name);
+        println!("Engraved {}({}) to spell memory.", s.name, s.key);
     }
 
     pub fn equip_shield(&mut self)
@@ -130,7 +130,13 @@ impl Character {
         println!("[Spells]");
         for spel in &self.i_spells
         {
-            println!("*\t{}", spel.name);
+            println!("*\t{}({})", spel.name, spel.key);
+        }
+    }
+    pub fn print_spells(&self) {
+        for spel in &self.i_spells
+        {
+            println!("*\t{}({})", spel.name, spel.key);
         }
     }
 }

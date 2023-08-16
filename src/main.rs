@@ -153,6 +153,10 @@ pub fn dungeon_loop(c: &mut Character) {
             c.print_inventory();
             continue;
         }
+        if parts[0].trim() == "spells" {
+            c.print_spells();
+            continue;
+        }
         //hp
         if parts[0] == "hp"
         {
@@ -171,6 +175,7 @@ pub fn dungeon_loop(c: &mut Character) {
                 let goto = parts[1].trim();
                 
                 lookup_room(goto, &mut dungeon);
+                continue;
             }
             //attack
             else if parts[0].trim() == "attack"
@@ -195,14 +200,14 @@ pub fn dungeon_loop(c: &mut Character) {
 
                 //Spell valid?
                 for s in &c.i_spells {
-                    if s_name == s.name {
+                    if s_name == s.key {
                         spell = s.clone();
                         s_valid = true;
                         break;
                     }
                 }
                 if !s_valid {
-                    println!("Invalid spell name!")
+                    println!("Invalid spell name!");
                     continue;
                 }
 
