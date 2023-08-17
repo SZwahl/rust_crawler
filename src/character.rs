@@ -41,7 +41,7 @@ impl Character {
             }
         }
         
-        let hit_p = 4 + roll("1d3").total;
+        let hit_p = 6 + roll("1d3").total;
         
         Self {
             condition: Condition::new(hit_p, stats[0], stats[1], stats[2]),
@@ -202,6 +202,8 @@ impl Character {
         if heal > max_heal { heal = max_heal;}
     
         self.condition.c_hp += heal;
+
+        self.i_potions -= 1;
     
         println!("Drank potion for {} health. (Now at {}/{})", heal, self.condition.c_hp, self.condition.tot_hp);
     

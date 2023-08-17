@@ -35,7 +35,7 @@ fn main() {
     println!("Beginning dungeon...");
     dungeon_loop(&mut c);
 
-    wait_for_input();
+    sorry_youre_dead();
 }
 
 fn choose_equipment(c: &mut Character){
@@ -101,8 +101,8 @@ fn choose_equipment(c: &mut Character){
     }
 }
 
-fn wait_for_input(){
-    println!("(What do you do?)");
+fn sorry_youre_dead(){
+    println!("Rest in peace!");
     let mut entry = String::new();
 
     io::stdin()
@@ -381,14 +381,20 @@ pub fn dungeon_loop(c: &mut Character) {
 
                 let damage_total = roll(&e.attacks[0].damage).total as i32;
                 let mut e_name = e.name.clone();
-                e_name.push_str(" (");
+                e_name.push_str(" [");
                 e_name.push_str(&e.key);
-                e_name.push_str(")");
+                e_name.push_str("]");
 
                 println!("{} {}.", e_name, e.attacks[0].desc);
 
+
                 //get condition
                 let condition: &mut Condition = &mut c.condition;
+
+                if e.attacks[0].eff_type != StatTypes::None {
+                    let stat_death = condition.damage_stat(e.attacks[0].eff_damage as i32, e.attacks[0].eff_type.clone());
+                }
+
                 //apply to you
                 let is_dead = condition.damage(damage_total, &e_name, &String::from("You"));
 
@@ -441,9 +447,9 @@ fn describe_room(room: &Room) {
         
         for ix in 0..room.enemies.len() {
             e_desc.push_str(room.enemies[ix].name.as_str());
-            e_desc.push_str("(");
+            e_desc.push_str(" [");
             e_desc.push_str(room.enemies[ix].key.as_str());
-            e_desc.push_str(")");
+            e_desc.push_str("]");
 
             if ix != room.enemies.len()-1 {
                 e_desc.push_str(", ");

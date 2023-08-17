@@ -2,6 +2,9 @@
 
 Simple dungeon crawler written in Rust.
 
+Traverse the dungeon and equip yourself for the final encounter. 
+Heal using potions. 
+
 ## Commands
 These actions are free
 * look

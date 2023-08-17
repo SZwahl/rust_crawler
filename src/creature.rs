@@ -1,4 +1,4 @@
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub enum StatTypes {
     Power,
     Finesse,
@@ -82,6 +82,47 @@ impl Condition {
 
         return IsDead::Ok;
     }
+
+    pub fn damage_stat(&mut self, dam: i32, st: StatTypes) -> IsDead {
+        //subtract damage from current
+        let mut new_total: i32 = 0;
+
+        if st == StatTypes::Power {
+            new_total = self.c_power as i32;
+        }
+        else if st == StatTypes::Finesse {
+            new_total = self.c_finesse as i32;
+        }
+        else if st == StatTypes::Mind {
+            new_total = self.c_mind as i32;
+        }
+
+        new_total -= dam;
+        if new_total < 0 { new_total = 0; }
+
+        //Apply
+        if st == StatTypes::Power {
+            self.c_power = new_total as u32;
+            self.mod_power = calc_mod(self.c_power);
+            println!("Your power decreases by {}! Now {}/{} ({}).", dam, self.c_power, self.power, self.mod_power);
+        }
+        else if st == StatTypes::Finesse {
+            self.c_finesse = new_total as u32;
+            self.mod_finesse = calc_mod(self.c_finesse);
+            println!("Your finesse decreases by {}! Now {}/{} ({}).", dam, self.c_finesse, self.finesse, self.mod_finesse);
+        }
+        else if st == StatTypes::Mind {
+            self.c_mind = new_total as u32;
+            self.mod_mind = calc_mod(self.c_mind);
+            println!("Your mind decreases by {}! Now {}/{} ({}).", dam, self.c_mind, self.mind, self.mod_mind);
+        }
+
+        if new_total == 0 {
+            println!("Stat decreased to 0!");
+            return IsDead::Dead;
+        }
+        else { return IsDead::Ok; }
+    }
 }
 
 fn calc_mod(stat: u32) -> i8 {
@@ -100,17 +141,17 @@ pub struct Attack {
     pub damage: String,
     pub save: StatTypes,
     pub eff_type: StatTypes,
-    pub eff_damage: String,
+    pub eff_damage: u32,
 }
 
 impl Attack {
-    pub fn new(des: &str, dam: &str, sav: StatTypes, eff_t: StatTypes, eff_dam: &str) -> Self {
+    pub fn new(des: &str, dam: &str, sav: StatTypes, eff_t: StatTypes, eff_dam: u32) -> Self {
         Self {
             desc: String::from(des),
             damage: String::from(dam),
             save: sav,
             eff_type: eff_t,
-            eff_damage: String::from(eff_dam),
+            eff_damage: eff_dam,
         }
     }
 }
