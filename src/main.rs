@@ -34,8 +34,6 @@ fn main() {
     //load adventure
     println!("Beginning dungeon...");
     dungeon_loop(&mut c);
-
-    sorry_youre_dead();
 }
 
 fn choose_equipment(c: &mut Character){
@@ -278,6 +276,15 @@ pub fn dungeon_loop(c: &mut Character) {
                 if is_dead.expect("uh") != IsDead::Invalid {
                     combat_action = true;
                 }
+
+                if dungeon.cur == 5 {
+                    if dungeon.cur_room().enemies.len() == 0
+                    {
+                        println!("-----------------------------");
+                        println!("The fiendish warlock is slain. You win!");
+                        return;
+                    }
+                }
             }
             //open
             else if parts[0].trim() == "open" {
@@ -407,6 +414,7 @@ pub fn dungeon_loop(c: &mut Character) {
                 }
                 else if is_dead == IsDead::Dead {
                     println!("You died!");
+                    sorry_youre_dead();
                     return;
                 }
             }
