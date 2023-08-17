@@ -13,10 +13,10 @@ These actions are free
 * stats
 * enter [hallway]
 * swap [equipment]
+* quaff
 
 ## Combat Commands
 These actions will advnace combat, provoking attacks from surviving enemies.
 * attack [enemy]
 * cast [spell] on [enemy]
 * open [chest]
-* quaff
