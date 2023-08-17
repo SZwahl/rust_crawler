@@ -257,6 +257,10 @@ pub fn dungeon_loop(c: &mut Character) {
                 println!("No potions to quaff.");
             }
         }
+        //help lol
+        else if parts[0].trim() == "help" {
+            println!("Free Commands: \n\t*look\n\t*inventory\n\t*spells\n\t*stats\n\t*quaff\n\t*enter [x]\n\t*Swap [weapon or armor]\nTurn Commands:\n\t*attack [x]\n\t*open [x]")
+        }
         //check double-word commands
         else if parts.len() == 2 { 
             //enter

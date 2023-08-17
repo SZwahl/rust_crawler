@@ -104,7 +104,7 @@ impl Character {
 
     pub fn acquire_weapon(&mut self, w: Weapon){
         self.i_weapons.push(w.clone());
-        println!("Stowed {} in inventory.", w.name);
+        println!("Stowed {} [{}] in inventory.", w.print(), w.key);
     }
 
     pub fn swap_armor(&mut self, a: &Armor) {
